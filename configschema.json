@@ -1,0 +1,46 @@
+{
+  "$id": "http://github.com/tapis-project/tokens-api/tokens-api/configschema.json",
+  "$schema": "http://json-schema.org/schema#",
+  "properties": {
+    "tenants": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "The list of tenants that this tokens issue will generate tokens for.",
+    },
+    "use_sk": {
+      "type": "boolean",
+      "description": "Whether this tokens service should use an external Tapis Security Kernel for its auth. NOTE: This should always be TRUE in production",
+      "default": true,
+    },
+    "tenant_iss": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "The list of tenants that this tokens issue will generate tokens for.",
+    },
+    "dev_jwt_public_key": {
+      "type": "string",
+      "description": "The public key associated with the private key to use for signing JWTs in dev mode. NOTE: This should NOT be used in production",
+      "default": ""
+    },
+    "dev_jwt_private_key": {
+      "type": "string",
+      "description": "A private key to use for signing JWTs in dev mode. NOTE: This should NOT be used in production",
+      "default": ""
+    },
+    "dev_iss": {
+      "type": "string",
+      "description": "The URL to use for the 'iss' claim in dev mode. NOTE: This should NOT be used in production",
+      "default": ""
+    },
+    "sql_db_url": {
+      "type": "string",
+      "description": "full URL, including protocol and database, to the SQL db.",
+      "default": "postgres://tenants:d3fd6pAssw0rd@postgres:5432/tenants"
+    }
+  },
+  "required": ["tenants"]
+}
