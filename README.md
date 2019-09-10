@@ -26,7 +26,7 @@ Starting the API the first time requires some initial setup. Do the following st
 1. `make init_dbs` - creates a new docker volume, `tokens-api_pgdata`, creates a new Postrgres
 Docker container with the volume created, and creates the initial (empty) database and database user.
 2. `make migrate.upgrade` - runs the migrations contained within the `migrations/versions` directory.
-3. `docker-compose up -d tenants` - starts the Tenats API.
+3. `docker-compose up -d tokens` - starts the Tokens API.
 
 #### Updating the API After the First Setup
 Once the First Time Setup has been done a machine, updates can be fetched applied as follows:
@@ -35,7 +35,7 @@ Once the First Time Setup has been done a machine, updates can be fetched applie
 2. `make build.api` - Build a new version of the API container image.
 3. `make migrate.upgade` - Run any new migrations (this step is only needed if new files appear in the `versions`
 directory).migrations
-4. `docker-compose up -d tenants` - start a new version of the Tenats API.
+4. `docker-compose up -d tokens` - start a new version of the Tokens API.
 
 #### New DB Schema
 During initial development, the database schema can be in flux. Changes to the models require new migrations. Instead of
@@ -48,7 +48,7 @@ Docker container with the volume created, and creates the initial (empty) databa
 3. Add the migrations:
 
 ```
-docker run -it --rm --entrypoint=bash --network=tenants-api_tenants -v $(pwd):/home/tapis/mig tapis/tenants-api
+docker run -it --rm --entrypoint=bash --network=tokens-api_tokens -v $(pwd):/home/tapis/mig tapis/tokens-api
   # inside the container:
   $ cd mig; flask db init
   $ flask db migrate
@@ -59,7 +59,7 @@ docker run -it --rm --entrypoint=bash --network=tenants-api_tenants -v $(pwd):/h
 ### Quickstart
 Use any HTTP client to interact with the running API. The following examples use `curl`.
 
-There are three primary collections supported by this API - `/owners`, `/ldaps` and `/tenants`.
+There are three primary collections supported by this API - `/owners`, `/ldaps` and `/tokens`.
 Creating a tenant requires references to LDAP and owner object. 
 
 To illustrate, we will register the TACC production tenant. We first begin by creating an owner
@@ -186,35 +186,6 @@ curl localhost:5000/ldaps/tacc-all | jq
   "version": "
 ```
 
-#### Work With Tenants
+#### Work With Tokens
 
-Now that we have an owner and LDAP objects created, we are ready to create our TACC production
-tenant.
-
-```
-$ curl localhost:5000/tenants -H "content-type: application/json" \ 
--d '{"tenant_id":"tacc", "base_url": "https://api.tacc.utexas.edu", "token_service": "https://api.tacc.utexas.edu/token/v3", "security_kernel": "https://api.tacc.utexas.edu/security/v3", "owner": "jstubbs@tacc.utexas.edu", "service_ldap_connection_id": "tacc.prod.service", "user_ldap_connection_id": "tacc-all", "description": "Production tenant for all TACC users."}'
-
-{
-  "message": "Tenant created successfully.",
-  "result": {
-    "base_url": "https://api.tacc.utexas.edu",
-    "description": "Production tenant for all TACC users.",
-    "owner": "jstubbs@tacc.utexas.edu",
-    "security_kernel": "https://api.tacc.utexas.edu/security/v3",
-    "service_ldap_connection_id": "tacc.prod.service",
-    "tenant_id": "tacc",
-    "token_service": "https://api.tacc.utexas.edu/token/v3",
-    "user_ldap_connection_id": "tacc-all"
-  },
-  "status": "success",
-  "version": "dev"
-}
-
-```
-Listing and retrieving tenants works just like in the case of owners and LDAP objects.
-
-
-### Beyond the Quickstart
-
-A complete OpenAPI v3 spec file is included in the `service/resources` directory within this repository.
+TBD
