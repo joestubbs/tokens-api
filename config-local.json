@@ -1,7 +1,5 @@
 {
   "service_name": "tokens",
   "use_sk": false,
-  "tenants": ["dev"],
-  "dev_jwt_private_key": "",
-  "dev_jwt_public_key": ""
+  "tenants": ["dev"]
 }

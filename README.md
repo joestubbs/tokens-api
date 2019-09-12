@@ -186,6 +186,16 @@ curl localhost:5000/ldaps/tacc-all | jq
   "version": "
 ```
 
+#### Generating a Public/Private Key Pair
+(TODO - needs more detail)
+For local development, generate a public/private RSA256 key pair with the following command:
+
+```
+$ ssh-keygen -t rsa -b 1024 -m PEM -f jwtRS256.key
+```
+
+Read the public and private keys into strings and update the associated config files, as necessary.
+
 #### Work With Tokens
 
 TBD

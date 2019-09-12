@@ -53,6 +53,8 @@ class TapisAccessToken(TapisToken):
     Adds attributes and methods specific to access tokens.
     """
     delegation = None
+    # these are the standard Tapis access token claims and cannot appear in the extra_claims parameter -
+    standard_tapis_access_claims = set('iss', 'sub', 'tenant', 'username', 'account_type', 'exp')
 
     def __init__(self, iss, sub, tenant, username, account_type, exp, delegation, extra_claims=None):
         super().__init__(iss, sub, tenant, username, account_type, exp, extra_claims)

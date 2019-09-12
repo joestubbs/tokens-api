@@ -1,25 +1,22 @@
+from common.auth import tenants as ts
 from common.config import conf
 
-def get_tenants():
+def add_tenant_private_keys():
     """
-    Retrieve the set of tenants that this token service instance is generating tokens for.
+    Look up private keys associated with all tenants configured for the token service  and store them on the
+    service's `tenants` singleton.
     :return:
     """
-    return conf.tenants
+    result = []
+    for tenant in ts:
+        # in dev mode, the tokens service can be configured to not use the security kernel, in which case we must get
+        # the private key for a "dev" tenant directly from the service configs:
+        if not conf.use_sk:
+            tenant['private_key'] = conf.dev_jwt_public_key,
+            result.append(tenant)
+        else:
+            # TODO -- get the PK from the security kernel...
+            pass
+    return result
 
-tenants_strings = get_tenants()
-
-# tenants configs used by the tokens service
-tenants = []
-# in dev mode, the tokens API can be configured to not use the security kernel, in which case we must get auxiliary
-# configuration directly from the service configs:
-if not conf.use_sk:
-    for tenant in tenants_strings:
-        t = {'tenant_id': tenant,
-             'iss': conf[f'{tenant}_iss'],
-             }
-        tenants.append(t)
-
-else:
-    # todo -- look up tenants in the tenants API, get the associated parameters (including sk location) and call the
-    pass
+tenants = add_tenant_private_keys()
