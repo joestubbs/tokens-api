@@ -68,9 +68,11 @@ $ curl -H "Content-type: application/json" -d '{"token_tenant_id": "dev", "token
 {
   "message": "Token generation successful.",
   "result": {
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2Rldi5hcGkudGFwaXMuaW8vdG9rZW5zL3YzIiwic3ViIjoiZGV2QGpzdHViYnMiLCJ0ZW5hbnRfaWQiOiJkZXYiLCJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZGVsZWdhdGlvbiI6ZmFsc2UsInVzZXJuYW1lIjoianN0dWJicyIsImFjY291bnRfdHlwZSI6InNlcnZpY2UiLCJleHAiOjE1Njg0MTQ5ODh9.UMqDeCzLluqKYaKAFk4gSkYnPJxGKJRQT1GaKwkWcZwNdPkr42Ye2HBSgMATAKH8_ufrbqrhqmA_rjuwYcc5qdkNij3dpOj5mKUBYsdmu1AAgOLa6gg1H_tORKlyDM4l55qPJkfyksb5dqhNHmtRJOH0yoytgUftxRTamYKtLIA",
-    "expires_at": "2019-09-13 22:49:48.281498",
-    "expires_in": 300
+    "access_token": {
+      "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2Rldi5hcGkudGFwaXMuaW8vdG9rZW5zL3YzIiwic3ViIjoiZGV2QGpzdHViYnMiLCJ0ZW5hbnRfaWQiOiJkZXYiLCJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZGVsZWdhdGlvbiI6ZmFsc2UsInVzZXJuYW1lIjoianN0dWJicyIsImFjY291bnRfdHlwZSI6InNlcnZpY2UiLCJleHAiOjE1Njg0MTcxODh9.JBTEK81Uvb1FNRFRm6oLt2Fog3OHmJa9Z4kkRAo7LQlYSbZZdHxXnzTtCXXTrYr7YFIHTQ8xcNLRjwT5nUOaLlmu8qzrjanRbC1XQHZa4jRUOK2ARBUZRK9yVaf2uvbBRJLW_Krzo90p3Pn-RWR2TwcYKtRAQlygKgXdkn1zmZw",
+      "expires_at": "2019-09-13 23:26:28.196173",
+      "expires_in": 300
+    }
   },
   "status": "success",
   "version": "dev"
