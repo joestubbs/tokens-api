@@ -59,134 +59,52 @@ docker run -it --rm --entrypoint=bash --network=tokens-api_tokens -v $(pwd):/hom
 ### Quickstart
 Use any HTTP client to interact with the running API. The following examples use `curl`.
 
-There are three primary collections supported by this API - `/owners`, `/ldaps` and `/tokens`.
-Creating a tenant requires references to LDAP and owner object. 
+#### Generate Tokens
 
-To illustrate, we will register the TACC production tenant. We first begin by creating an owner
-for our tenant.
-
-#### Work With Owners
-Owners have three fields, all required: `name`, `email`, and `institution`. We can create an 
-owner like so:
+Generate an access token:
 
 ```
-$ curl localhost:5000/owners -H "content-type: application/json" -d '{"name": "Joe Stubbs", "email": "jstubbs@tacc.utexas.edu", "institution": "UT Austin"}'
+$ curl -H "Content-type: application/json" -d '{"token_tenant_id": "dev", "token_type": "service", "token_username": "jstubbs"}'  localhost:5001/tokens
+{
+  "message": "Token generation successful.",
+  "result": {
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2Rldi5hcGkudGFwaXMuaW8vdG9rZW5zL3YzIiwic3ViIjoiZGV2QGpzdHViYnMiLCJ0ZW5hbnRfaWQiOiJkZXYiLCJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZGVsZWdhdGlvbiI6ZmFsc2UsInVzZXJuYW1lIjoianN0dWJicyIsImFjY291bnRfdHlwZSI6InNlcnZpY2UiLCJleHAiOjE1Njg0MTQ5ODh9.UMqDeCzLluqKYaKAFk4gSkYnPJxGKJRQT1GaKwkWcZwNdPkr42Ye2HBSgMATAKH8_ufrbqrhqmA_rjuwYcc5qdkNij3dpOj5mKUBYsdmu1AAgOLa6gg1H_tORKlyDM4l55qPJkfyksb5dqhNHmtRJOH0yoytgUftxRTamYKtLIA",
+    "expires_at": "2019-09-13 22:49:48.281498",
+    "expires_in": 300
+  },
+  "status": "success",
+  "version": "dev"
+}
+
+```
+
+Generate access and refresh tokens:
+
+```
+$ curl -H "Content-type: application/json" -d '{"token_tenant_id": "dev", "token_type": "service", "token_username": "jstubbs", "generate_refresh_token": true}'  localhost:5001/tokens
 
 {
-  "message": "Owner created successfully.",
-  "result":
-    {
-      "email": "jstubbs@tacc.utexas.edu",
-      "institution": "UT Austin",
-      "name": "Joe Stubbs"
+  "message": "Token generation successful.",
+  "result": {
+    "access_token": {
+      "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2Rldi5hcGkudGFwaXMuaW8vdG9rZW5zL3YzIiwic3ViIjoiZGV2QGpzdHViYnMiLCJ0ZW5hbnRfaWQiOiJkZXYiLCJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZGVsZWdhdGlvbiI6ZmFsc2UsInVzZXJuYW1lIjoianN0dWJicyIsImFjY291bnRfdHlwZSI6InNlcnZpY2UiLCJleHAiOjE1Njg0MTcwNDR9.ZE_JqYRhpkAIyExgKP7YAIEIFNROJ4oft0G_dX1Q4WlPmCio2OQ4ajcxEjbfMUgPaFVBIgZ0IOQ76xaWIqtjVyoecCzJDX6U6RLEa-etnJzgfi3D6yjOCYahoAPiLwrCswgVqyGediEAxTvdWQUqK6xsrwiTB7iYT_HRDR_yb8Q",
+      "expires_at": "2019-09-13 23:24:04.758644",
+      "expires_in": 300
     },
-  "status": "success",
-  "version": "dev"
-}
-
-```
-We can list the owners by making a `GET` request to `/owners`, and we can retrieve details about
-an owner using the owner's email address; for example:
-
-```
-$curl localhost:5000/owners | jq
-{
-  "message": "Owners retrieved successfully.",
-  "result": [
-    {
-      "email": "jstubbs@tacc.utexas.edu",
-      "institution": "UT Austin",
-      "name": "Joe Stubbs"
+    "refresh_token": {
+      "expires_at": "2019-09-13 23:29:04.896390",
+      "expires_in": 600,
+      "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2Rldi5hcGkudGFwaXMuaW8vdG9rZW5zL3YzIiwic3ViIjoiZGV2QGpzdHViYnMiLCJ0ZW5hbnRfaWQiOiJkZXYiLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsInVzZXJuYW1lIjoianN0dWJicyIsImFjY291bnRfdHlwZSI6InNlcnZpY2UiLCJleHAiOjE1Njg0MTczNDQsImFjY2Vzc190b2tlbiI6eyJpc3MiOiJodHRwczovL2Rldi5hcGkudGFwaXMuaW8vdG9rZW5zL3YzIiwic3ViIjoiZGV2QGpzdHViYnMiLCJ0ZW5hbnRfaWQiOiJkZXYiLCJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZGVsZWdhdGlvbiI6ZmFsc2UsInVzZXJuYW1lIjoianN0dWJicyIsImFjY291bnRfdHlwZSI6InNlcnZpY2UifX0.rdCY7xGTIyMa04AtxIKeBCV06i0dI4kJC0R-uZQwRC6GIH2sNE9qc7YPE5qYTPpAWneuMd-pMc7SijW2DPkIQdGQOuVHd_m-L5aivVmyfh9IR69x2rx5RXFo5iLEDtz-9eBFw81JTXYpNc-W2mIYeTwQTijt_KbibwWa7Nvj2xw"
     }
-  ],
-  "status": "success",
-  "version": "dev"
-}
-
-curl localhost:5000/owners/jstubbs@tacc.utexas.edu | jq
-{
-  "message": "Owner object retrieved successfully.",
-  "result": {
-    "email": "jstubbs@tacc.utexas.edu",
-    "institution": "UT Austin",
-    "name": "Joe Stubbs"
   },
   "status": "success",
   "version": "dev"
 }
-
 ```
 
-#### Work With LDAP Objects
 
-LDAP objects represent collections of accounts on remote LDAP servers, together with connection
-information detailing how to bind to the LDAP. Two types of LDAP objects are supported: `user` and
-`service`. These types correspond to the two types of accounts in any Tapis tenant.
- 
-LDAP objects also require a `bind_credential`. This is a reference to a credential that
-is retrievable from the Tapis Security Kernel.
 
-We will create two LDAP objects for the TACC tenant, one for user accounts and one for
-service accounts. First we create the service account ldap:
-
-```
-$ curl localhost:5000/ldaps -H "content-type: application/json" -d '{"url":"ldaps://tapisldap.tacc.utexas.edu:636", "user_dn": "ou=tacc.prod.service,dc=tapisapi", "bind_dn": "cn=admin,dc=tapisapi", "bind_credential": "/tapis/tapis.prod.ldapbind", "account_type": "service", "ldap_id": "tacc.prod.service"}'
-{
-	"message": "LDAP object created successfully.",
-	"result": {
-		"account_type": "LDAPAccountTypes.service",
-		"bind_credential": "/tapis/tapis.prod.ldapbind",
-		"bind_dn": "cn=admin,dc=tapisapi",
-		"ldap_id": "tacc.prod.service",
-		"url": "ldaps://tapisldap.tacc.utexas.edu",
-		"user_dn": "ou=tacc.prod.service,dc=tapisapi"
-	},
-	"status": "success",
-	"version": "dev"
-}
-
-```
-
-Next, the user accounts ldap:
-
-```
-$ curl localhost:5000/ldaps -H "content-type: application/json" -d '{"url":"ldaps://ldap.tacc.utexas.edu:636", "user_dn": "ou=People,dc=tacc,dc=utexas,dc=edu", "bind_dn": "uid=ldapbind,ou=People,dc=tacc,dc=utexas,dc=edu", "bind_credential": "/tapis/tacc.prod.ldapbind", "account_type": "user", "ldap_id": "tacc-all"}'
-{
-	"message": "LDAP object created successfully.",
-	"result": {
-		"account_type": "LDAPAccountTypes.user",
-		"bind_credential": "/tapis/tacc.prod.ldapbind",
-		"bind_dn": "uid=ldapbind,ou=People,dc=tacc,dc=utexas,dc=edu",
-		"ldap_id": "tacc-all",
-		"url": "ldaps://ldap.tacc.utexas.edu:636",
-		"user_dn": "ou=People,dc=tacc,dc=utexas,dc=edu"
-	},
-	"status": "success",
-	"version": "dev"
-}
-
-```
-
-Just as with the `/owners` collection and we can list all LDAP objects and get details about
-specific LDAP objects using the usual GET requests. For example,
-
-```
-curl localhost:5000/ldaps/tacc-all | jq
-{
-  "message": "LDAP object retrieved successfully.",
-  "result": {
-    "account_type": "LDAPAccountTypes.user",
-    "bind_credential": "/tapis/tacc.prod.ldapbind",
-    "bind_dn": "uid=ldapbind,ou=People,dc=tacc,dc=utexas,dc=edu",
-    "ldap_id": "tacc-all",
-    "url": "ldaps://ldap.tacc.utexas.edu:636",
-    "user_dn": "ou=People,dc=tacc,dc=utexas,dc=edu"
-  },
-  "status": "success",
-  "version": "
-```
-
-#### Generating a Public/Private Key Pair
+### Generating a Public/Private Key Pair
 (TODO - needs more detail)
 For local development, generate a public/private RSA256 key pair with the following command:
 
