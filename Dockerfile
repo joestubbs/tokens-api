@@ -8,6 +8,7 @@ WORKDIR /home/tapis
 
 # ----API specific code
 ENV TAPIS_API tokens
+RUN touch /home/tapis/service.log
 
 COPY configschema.json /home/tapis/configschema.json
 COPY config-local.json /home/tapis/config.json

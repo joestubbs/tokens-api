@@ -139,7 +139,7 @@ class TapisAccessToken(TapisToken):
         """
         Computes derived values for the access token from input and defaults.
         :param data:
-        :return:
+        :return: dict (result)
         """
         # convert required fields to their data model attributes -
         try:
@@ -201,8 +201,10 @@ class TapisRefreshToken(TapisToken):
             'sub': self.sub,
             'tenant_id': self.tenant_id,
             'token_type': self.token_type,
-            'username': self.username,
-            'account_type': self.account_type,
+            # NOTE: we intentionally do not include these claims, as the refresh token should not be
+            #       honored by services as an access token.
+            # 'username': self.username,
+            # 'account_type': self.account_type,
             'exp': self.exp,
             'access_token': self.access_token
         }
