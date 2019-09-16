@@ -1,3 +1,8 @@
+
+# ----------------------------------------------------
+# MOVED TO https://github.com/tapis-project/tokens-api 
+# ----------------------------------------------------
+
 # Tapis Tokens API
 
 REST API and OAuth2 server for working with authentication tokens for the Tapis v3 Platform.
